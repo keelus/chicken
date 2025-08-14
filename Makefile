@@ -12,3 +12,6 @@ run:
 
 clean:
 	rm ./$(BIN_NAME)
+
+generate:
+	python3 ./sb_packet_definition_generator.py

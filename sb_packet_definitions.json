@@ -1,0 +1,23 @@
+{
+	"handshake": [
+		{
+			"name": "handshake",
+			"id": 0,
+			"fields": {
+				"protocol_version": "varint",
+				"server_address": "string",
+				"server_port": "unsigned_short",
+				"next_state": "varint"
+			}
+		}
+	],
+	"play": [
+		{
+			"name": "chat_message",
+			"id": 2,
+			"fields": {
+				"json_data": "string"
+			}
+		}
+	]
+}
