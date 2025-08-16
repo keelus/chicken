@@ -11,12 +11,12 @@
 			}
 		}
 	],
-	"play": [
+	"login": [
 		{
-			"name": "chat_message",
-			"id": 2,
+			"name": "login_start",
+			"id": 0,
 			"fields": {
-				"json_data": "string"
+				"name": "string"
 			}
 		}
 	]

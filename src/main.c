@@ -5,32 +5,21 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <pthread.h>
-#include "common.h"
+#include "net/common/client.h"
+#include "net/common/raw_packet.h"
 #include "net/server_bound/fields/varint.h"
-#include "net/server_bound/packets/handshake/handshake.h"
-
-typedef enum {
-	SERVER_STATE_HANDSHAKE = 0,
-	SERVER_STATE_LOGIN = 1,
-	SERVER_STATE_PLAY = 2,
-} ServerState;
-
-typedef struct {
-	int fd;
-} Client;
+#include "net/server_bound/packet_handler.h"
 
 typedef struct {
 	char *buff;
 	usize len;
 } packet_t;
 
-packet_t *obtain_packet(int fd) {
+usize obtain_packet(int fd, char **buffer) {
 	u8 b;
 	isize n;
 	usize value = 0;
 	usize position = 0;
-
-	printf("Will obtain packet.\n");
 
 	while((n = recv(fd, &b, 1, 0)) > 0) {
 		value |= (b & 0b01111111) << position;
@@ -43,19 +32,14 @@ packet_t *obtain_packet(int fd) {
 			exit(1);
 		}
 	}
-	printf("Last byte: 0x%02x\n", b);
-	printf("Length: %zu\n", value);
 
 	if(n <= 0) {
 		printf("Obtained read of length %lu.\n", n);
 		exit(1);
 	}
 
-	char *buff = malloc(sizeof(char) * value);
-	for(int i = 0; i < value; i++) {
-		buff[i] = 0x69;
-	}
-	n = recv(fd, buff, value, 0);
+	*buffer = malloc(sizeof(char) * value);
+	n = recv(fd, *buffer, value, 0);
 	if(n <= 0) {
 		printf("Obtained read of length %lu.\n", n);
 		exit(1);
@@ -65,38 +49,33 @@ packet_t *obtain_packet(int fd) {
 		exit(1);
 	}
 
-
-	packet_t *packet = malloc(sizeof(packet_t));
-	*packet = (packet_t){.buff = buff, .len = value};
-	return packet;
+	return n;
 }
 
-int connect_client(Client *client) {
-	packet_t *packet = obtain_packet(client->fd);
-	if(packet == NULL) {
-		printf("Got no first packet.\n");
-		return -1;
-	}
+int connect_client(net_common_client_t *client) {
+	char *buffer = NULL;
+	usize index, len, id;
+	net_sb_raw_packet_t raw_packet;
 
-	raw_packet_t raw_packet = {
-		.buffer = packet->buff,
-		.len = packet->len,
-	};
+	// Handshake packet
+	len = obtain_packet(client->fd, &buffer);
+	index = 0;
+	id = net_sb_varint_parse(buffer, len, &index);
+	raw_packet =
+		(net_sb_raw_packet_t){.buffer = buffer + index, .len = len, .id = id};
+	net_sb_packet_handle(raw_packet, client);
+	free(buffer);
+	buffer = NULL;
 
-	usize index = 0;
-	usize packet_id = net_sb_varint_parse(&raw_packet, &index);
-
-	net_sb_packets_handshake_handshake *parsed_packet =
-		net_sb_packets_handshake_handshake_parse(&(raw_packet_t){
-			.buffer = packet->buff + index,
-			.len = packet->len,
-		});
-
-	printf("====\n");
-	printf("Protocol version: %zu\n", parsed_packet->protocol_version);
-	printf("Address: \"%s\"\n", parsed_packet->address);
-	printf("Port: %d\n", parsed_packet->port);
-	printf("Next state: %zu\n", parsed_packet->next_state);
+	// LoginStart packet
+	len = obtain_packet(client->fd, &buffer);
+	index = 0;
+	id = net_sb_varint_parse(buffer, len, &index);
+	raw_packet =
+		(net_sb_raw_packet_t){.buffer = buffer + index, .len = len, .id = id};
+	net_sb_packet_handle(raw_packet, client);
+	free(buffer);
+	buffer = NULL;
 
 	return -1;
 }
@@ -105,13 +84,12 @@ void *handle_client(void *arg) {
 	int fd = *(int *)arg;
 	free(arg);
 
-	Client client = {.fd = fd};
+	net_common_client_t client = {.fd = fd};
 	if(connect_client(&client) == 0) {
 		printf("Client connected successfully.\n");
 	} else {
 		printf("The client was not connected.\n");
 	}
-
 
 	close(fd);
 	return NULL;

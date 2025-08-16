@@ -1,16 +1,17 @@
 #ifndef NET_SB_FIELDS_VARINT_H
 #define NET_SB_FIELDS_VARINT_H
 
-#include "../../../common.h"
+#include "../../common/aliases.h"
 #include <stdio.h>
 
-usize net_sb_varint_parse(const raw_packet_t *raw_packet, usize *index) {
+static inline usize net_sb_varint_parse(const char *buffer, const usize len,
+										usize *index) {
 	usize value = 0;
 	usize position = 0;
 	char b;
 
-	while(*index < raw_packet->len) {
-		b = raw_packet->buffer[*index];
+	while(*index < len) {
+		b = buffer[*index];
 		*index += 1;
 		value |= (b & 0b01111111) << position;
 

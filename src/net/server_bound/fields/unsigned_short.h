@@ -1,11 +1,12 @@
 #ifndef NET_SB_FIELDS_UNSIGNED_SHORT_H
 #define NET_SB_FIELDS_UNSIGNED_SHORT_H
 
-#include "../../../common.h"
+#include "../../common/aliases.h"
 
-u16 net_sb_unsigned_short_parse(const raw_packet_t *raw_packet, usize *index) {
-	u8 upper = raw_packet->buffer[*index];
-	u8 lower = raw_packet->buffer[*index + 1];
+static inline u16 net_sb_unsigned_short_parse(const char *buffer, usize len,
+											  usize *index) {
+	u8 upper = buffer[*index];
+	u8 lower = buffer[*index + 1];
 
 	*index += 2;
 

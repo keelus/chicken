@@ -1,7 +1,8 @@
 CC=gcc
 CFLAGS=-g
 SOURCES= \
-	 src/main.c
+	 src/main.c \
+	 src/net/server_bound/packet_handler.c
 BIN_NAME=chicken
 
 build:

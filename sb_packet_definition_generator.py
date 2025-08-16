@@ -24,13 +24,13 @@ PacketDefinitions = RootModel[dict[Category, list[Packet]]]
 
 PARSED_FIELDS: dict[FieldType, str] = {
     FieldType.varint: "usize",
-    FieldType.unsigned_short:"char *",
-    FieldType.string:"u16"
+    FieldType.string:"char *",
+    FieldType.unsigned_short:"u16"
 }
 
 def generate_file(category: str, packet: Packet) -> str:
     field_imports = "\n".join([
-        f"#include \"../../fields/{field_type}.h\""
+        f"#include \"../../fields/{field_type.value}.h\""
         for field_type in packet.fields.values()
     ])
     struct_fields = "\n\t".join([
@@ -38,7 +38,7 @@ def generate_file(category: str, packet: Packet) -> str:
         for field_name, field_type in packet.fields.items()
     ])
     field_parses = "\n\t".join([
-        f"{PARSED_FIELDS[field_type]} {field_name} = net_sb_{field_type}_parse(raw_packet, &index);"
+        f"{PARSED_FIELDS[field_type]} {field_name} = net_sb_{field_type.value}_parse(raw_packet->buffer, raw_packet->len, &index);"
         for field_name, field_type in packet.fields.items()
     ])
     field_assignments = "\n\t".join([
@@ -53,15 +53,15 @@ def generate_file(category: str, packet: Packet) -> str:
 #define {include_guard}
 // clang-format off
 
-#include "../../../../common.h"
+#include "../../../common/raw_packet.h"
 
 {field_imports}
 
 typedef struct {{
 	{struct_fields}
-}} net_sb_packets_handshake_handshake;
+}} {struct_name};
 
-{struct_name} * {struct_name}_parse(raw_packet_t *raw_packet) {{
+static inline {struct_name} * {struct_name}_parse(net_sb_raw_packet_t *raw_packet) {{
 	usize index = 0;
 
 	{field_parses}
@@ -90,12 +90,12 @@ def main() -> None:
     rmtree(BASE_FOLDER)
     os.mkdir(BASE_FOLDER)
     for category, packets in definitions.root.items():
-        target_folder = f"{BASE_FOLDER}/{category}"
+        target_folder = f"{BASE_FOLDER}/{category.value}"
         os.mkdir(target_folder)
-        print(f"Category \"{category}\"({len(packets)}):")
+        print(f"Category \"{category.value}\"({len(packets)}):")
         for packet in packets:
             with open(f"{target_folder}/{packet.name}.h", "w+") as f:
-                _ = f.write(generate_file(category, packet))
+                _ = f.write(generate_file(category.value, packet))
             print(f" - Generated \"{packet.name}.h\"")
 
 
