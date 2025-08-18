@@ -111,6 +111,8 @@ def generate_packet_implementation(category: str, packet: Packet) -> str:
     return f"""
 net_cb_packet* {function_name}({function_arguments}) {{
 	net_cb_packet *packet = (net_cb_packet *)malloc(sizeof(net_cb_packet));
+	packet->buffer = NULL;
+	packet->len = 0;
 
 {field_assignments}
 	return packet;

@@ -17,6 +17,8 @@
 	do {                                                                       \
 		net_cb_packet *final_packet =                                          \
 			(net_cb_packet *)malloc(sizeof(net_cb_packet));                    \
+		final_packet->buffer = NULL;                                           \
+		final_packet->len = 0;                                                 \
 		net_cb_packet_builder_add_varint(final_packet, packet->len);           \
 		net_cb_packet_builder_add_raw_bytes(                                   \
 			final_packet, (const u8 *)packet->buffer, packet->len);            \
