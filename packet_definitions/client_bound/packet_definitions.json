@@ -1,0 +1,80 @@
+{
+	"login": [
+		{
+			"name": "login_success",
+			"id": 2,
+			"fields": [
+				{
+					"name": "uuid",
+					"type": "string"
+				},
+				{
+					"name": "username",
+					"type": "string"
+				}
+			]
+		}
+	],
+	"play": [
+		{
+			"name": "join_game",
+			"id": 1,
+			"fields": [
+				{
+					"name": "entity_id",
+					"type": "int"
+				},
+				{
+					"name": "gamemode",
+					"type": "byte"
+				},
+				{
+					"name": "dimension",
+					"type": "byte"
+				},
+				{
+					"name": "difficulty",
+					"type": "unsigned_byte"
+				},
+				{
+					"name": "max_players",
+					"type": "unsigned_byte"
+				},
+				{
+					"name": "level_type",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"name": "player_position_and_look",
+			"id": 8,
+			"fields": [
+				{
+					"name": "x",
+					"type": "double"
+				},
+				{
+					"name": "y_eye_pos",
+					"type": "double"
+				},
+				{
+					"name": "z",
+					"type": "double"
+				},
+				{
+					"name": "yaw",
+					"type": "float"
+				},
+				{
+					"name": "pitch",
+					"type": "float"
+				},
+				{
+					"name": "on_ground",
+					"type": "bool"
+				}
+			]
+		}
+	]
+}

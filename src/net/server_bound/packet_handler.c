@@ -1,7 +1,10 @@
-#include "packet_definitions/handshake/handshake.h"
-#include "packet_definitions/login/login_start.h"
-#include "packet_handlers/handshake/handshake.h"
-#include "packet_handlers/login/login_start.h"
+#include "packet_definitions/handshake.h"
+#include "packet_definitions/login.h"
+#include "packet_handlers/handshake.h"
+#include "packet_handlers/login.h"
+
+#include "../common/raw_packet.h"
+#include "../common/client.h"
 
 #include <stdio.h>
 

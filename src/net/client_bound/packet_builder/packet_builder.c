@@ -1,12 +1,13 @@
 #include "packet_builder.h"
 #include <assert.h>
+#include <stdio.h>
 #include <string.h>
 
 void net_cb_packet_builder_add_bool(net_cb_packet *packet, const bool value) {
-	net_cb_packet_builder_add_byte(packet, (u8)value);
+	net_cb_packet_builder_add_unsigned_byte(packet, (u8)value);
 }
 
-void net_cb_packet_builder_add_byte(net_cb_packet *packet, const u8 value) {
+void net_cb_packet_builder_add_byte(net_cb_packet *packet, const i8 value) {
 	packet->len += 1;
 	packet->buffer =
 		(char *)realloc(packet->buffer, sizeof(char) * packet->len);
@@ -14,8 +15,8 @@ void net_cb_packet_builder_add_byte(net_cb_packet *packet, const u8 value) {
 }
 
 void net_cb_packet_builder_add_short(net_cb_packet *packet, const i16 value) {
-	net_cb_packet_builder_add_byte(packet, (u8)(value >> 8));
-	net_cb_packet_builder_add_byte(packet, (u8)value);
+	net_cb_packet_builder_add_unsigned_byte(packet, (u8)(value >> 8));
+	net_cb_packet_builder_add_unsigned_byte(packet, (u8)value);
 }
 
 void net_cb_packet_builder_add_int(net_cb_packet *packet, const i32 value) {
@@ -30,8 +31,8 @@ void net_cb_packet_builder_add_long(net_cb_packet *packet, const i64 value) {
 	net_cb_packet_builder_add_raw_bytes(packet, bytes, 8);
 }
 
-void net_cb_packet_builder_add_128_bit_int(net_cb_packet *packet,
-										   const i64 upper, const i64 lower) {
+void net_cb_packet_builder_add_int_128(net_cb_packet *packet, const i64 upper,
+									   const i64 lower) {
 	u8 bytes[16];
 	memcpy(bytes, &upper, 8);
 	memcpy(bytes + 8, &lower, 8);
@@ -70,7 +71,7 @@ void net_cb_packet_builder_add_varint(net_cb_packet *packet, const u32 value) {
 		assert(i <= sizeof(bytes));
 		bytes[i++] = byte;
 	} while(current_value != 0);
-	net_cb_packet_builder_add_raw_bytes(packet, bytes, 4);
+	net_cb_packet_builder_add_raw_bytes(packet, bytes, i);
 }
 
 void net_cb_packet_builder_add_raw_bytes(net_cb_packet *packet, const u8 *bytes,
@@ -79,4 +80,14 @@ void net_cb_packet_builder_add_raw_bytes(net_cb_packet *packet, const u8 *bytes,
 									 sizeof(char) * (packet->len + bytes_len));
 	memcpy(packet->buffer + packet->len, bytes, bytes_len);
 	packet->len += bytes_len;
+}
+
+void net_cb_packet_builder_add_unsigned_byte(net_cb_packet *packet,
+											 const u8 value) {
+	net_cb_packet_builder_add_byte(packet, (i8)value);
+}
+
+void net_cb_packet_builder_add_unsigned_short(net_cb_packet *packet,
+											  const u16 value) {
+	net_cb_packet_builder_add_short(packet, (i16)value);
 }

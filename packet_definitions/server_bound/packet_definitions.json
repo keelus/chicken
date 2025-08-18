@@ -1,0 +1,38 @@
+{
+	"handshake": [
+		{
+			"name": "handshake",
+			"id": 0,
+			"fields": [
+				{
+					"name": "protocol_version",
+					"type": "varint"
+				},
+				{
+					"name": "server_address",
+					"type": "string"
+				},
+				{
+					"name": "server_port",
+					"type": "unsigned_short"
+				},
+				{
+					"name": "next_state",
+					"type": "varint"
+				}
+			]
+		}
+	],
+	"login": [
+		{
+			"name": "login_start",
+			"id": 0,
+			"fields": [
+				{
+					"name": "name",
+					"type": "string"
+				}
+			]
+		}
+	]
+}
