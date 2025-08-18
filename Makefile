@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-g
+CFLAGS=-lz -g
 SOURCES= \
 	 src/main.c \
 	 src/net/server_bound/packet_handler.c

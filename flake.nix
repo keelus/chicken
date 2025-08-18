@@ -20,6 +20,8 @@
 					clang-tools
 					valgrind
 
+					zlib
+
 					python313
 					python313Packages.pydantic
 				];
