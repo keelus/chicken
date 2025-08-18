@@ -47,6 +47,16 @@
 			]
 		},
 		{
+			"name": "chat_message",
+			"id": 2,
+			"fields": [
+				{
+					"name": "json_data",
+					"type": "string"
+				}
+			]
+		},
+		{
 			"name": "player_position_and_look",
 			"id": 8,
 			"fields": [

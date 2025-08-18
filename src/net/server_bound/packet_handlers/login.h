@@ -63,6 +63,8 @@ static inline void net_sb_packet_handlers_login_login_start(
 	send_login_success(client);
 	send_join_game(client);
 	send_player_look_and_position(client);
+
+	client->state = CLIENT_STATE_PLAY;
 }
 
 

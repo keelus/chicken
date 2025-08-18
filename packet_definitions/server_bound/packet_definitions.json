@@ -34,5 +34,17 @@
 				}
 			]
 		}
+	],
+	"play": [
+		{
+			"name": "chat_message",
+			"id": 1,
+			"fields": [
+				{
+					"name": "message",
+					"type": "string"
+				}
+			]
+		}
 	]
 }

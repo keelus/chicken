@@ -7,6 +7,7 @@ SOURCES= \
 	 src/net/client_bound/packet_definitions/play.c \
 	 src/net/server_bound/packet_definitions/handshake.c \
 	 src/net/server_bound/packet_definitions/login.c \
+	 src/net/server_bound/packet_definitions/play.c \
 	 src/net/server_bound/packet_handler.c
 BIN_NAME=chicken
 
