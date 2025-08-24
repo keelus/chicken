@@ -26,9 +26,10 @@
 	} while(0);
 
 void send_login_success(net_common_client_t *client) {
-	char *uuid = "2c70029f-ff9f-45da-965b-f120d8a52938";
-	char *username = "keelus_";
-	SEND_PACKET(net_cb_packets_login_login_success_create(uuid, username));
+	char *uuid =
+		"2c70029f-ff9f-45da-965b-f120d8a52938"; // TODO: Obtain UUID properly
+	SEND_PACKET(
+		net_cb_packets_login_login_success_create(uuid, client->username));
 }
 
 void send_join_game(net_common_client_t *client) {
@@ -58,14 +59,13 @@ void send_player_look_and_position(net_common_client_t *client) {
 // 0x00 - Login Start
 static inline void net_sb_packet_handlers_login_login_start(
 	net_common_client_t *client, net_sb_packets_login_login_start *packet) {
-	printf("Player's name: \"%s\".\n", packet->name);
 
 	send_login_success(client);
 	send_join_game(client);
 	send_player_look_and_position(client);
 
 	client->state = CLIENT_STATE_PLAY;
+	client->username = strdup(packet->name);
 }
-
 
 #endif

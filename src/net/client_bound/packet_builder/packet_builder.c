@@ -1,6 +1,5 @@
 #include "packet_builder.h"
 #include <assert.h>
-#include <stdio.h>
 #include <string.h>
 
 void net_cb_packet_builder_add_bool(net_cb_packet *packet, const bool value) {
