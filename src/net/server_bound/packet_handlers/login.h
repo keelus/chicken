@@ -59,13 +59,12 @@ void send_player_look_and_position(net_common_client_t *client) {
 // 0x00 - Login Start
 static inline void net_sb_packet_handlers_login_login_start(
 	net_common_client_t *client, net_sb_packets_login_login_start *packet) {
+	client->username = strdup(packet->name);
+	client->state = CLIENT_STATE_PLAY;
 
 	send_login_success(client);
 	send_join_game(client);
 	send_player_look_and_position(client);
-
-	client->state = CLIENT_STATE_PLAY;
-	client->username = strdup(packet->name);
 }
 
 #endif
