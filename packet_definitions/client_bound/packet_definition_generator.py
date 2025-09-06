@@ -1,8 +1,6 @@
 from enum import Enum
 import os
-from pathlib import Path
 from shutil import rmtree
-import sys
 from pydantic import BaseModel, RootModel
 
 BASE_FOLDER = "./src/net/client_bound/packet_definitions"
@@ -41,18 +39,18 @@ PacketDefinitions = RootModel[dict[Category, list[Packet]]]
 
 PRIMITIVE_FIELDS: dict[FieldType, list[str]] = {
     FieldType.bool: ["bool"],
-    FieldType.byte: ["i8"],
-    FieldType.short: ["i16"],
-    FieldType.int: ["i32"],
-    FieldType.long: ["i64"],
-    FieldType.int_128: ["i64", "i64"],
+    FieldType.byte: ["int8_t"],
+    FieldType.short: ["int16_t"],
+    FieldType.int: ["int32_t"],
+    FieldType.long: ["int64_t"],
+    FieldType.int_128: ["int64_t", "int64_t"],
     FieldType.float: ["float"],
     FieldType.double: ["double"],
     FieldType.string: ["char *"],
-    FieldType.varint: ["u32"],
-    FieldType.raw_bytes: ["u8 *", "usize"],
-    FieldType.unsigned_byte: ["u8"],
-    FieldType.unsigned_short: ["u16"],
+    FieldType.varint: ["uint32_t"],
+    FieldType.raw_bytes: ["uint8_t *", "size_t"],
+    FieldType.unsigned_byte: ["uint8_t"],
+    FieldType.unsigned_short: ["uint16_t"],
 }
 
 def generate_function_arguments(packet: Packet) -> str:
@@ -121,7 +119,10 @@ net_cb_packet* {function_name}({function_arguments}) {{
 
 def generate_implementation_file(category: str, packets: list[Packet]) -> str:
     header_file_name = f"{category}.h"
-    s = f"""#include \"{header_file_name}\"
+    s = f"""#include <stdlib.h>
+
+#include \"{header_file_name}\"
+
 // clang-format off
 """
     for packet in packets:
@@ -147,7 +148,7 @@ def main() -> None:
 
     os.mkdir(BASE_FOLDER)
     for category, packets in definitions.root.items():
-        print(f" - Category \"{category.value}\"({len(packets)}).")
+        print(f' - Category "{category.value}"({len(packets)}).')
         with open(f"{BASE_FOLDER}/{category.value}.h", "w+") as f:
             _ = f.write(generate_header_file(category.value, packets))
         with open(f"{BASE_FOLDER}/{category.value}.c", "w+") as f:

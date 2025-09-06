@@ -1,12 +1,16 @@
-#include "raw_packet.h"
-#include "fields/varint.h"
-#include "sys/socket.h"
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
-int read_packet_length(int fd, u32 *value) {
-	u8 b;
-	isize n;
-	usize position = 0;
+#include "fields/varint.h"
+#include "raw_packet.h"
+
+int read_packet_length(int fd, uint32_t *value) {
+	uint8_t b;
+	ssize_t n;
+	size_t position = 0;
 
 	*value = 0;
 
@@ -34,11 +38,11 @@ int read_packet_length(int fd, u32 *value) {
 }
 
 int net_sb_read_raw_packet(int fd, net_sb_raw_packet_t *raw_packet) {
-	u32 expected_len;
+	uint32_t expected_len;
 	if(read_packet_length(fd, &expected_len) != 0) { return -1; }
 
 	char *buffer = malloc(sizeof(char) * expected_len);
-	isize len = recv(fd, buffer, expected_len, 0);
+	ssize_t len = recv(fd, buffer, expected_len, 0);
 	if(expected_len <= 0) {
 		printf("[ERROR] Invalid read of length %lu.\n", len);
 		free(buffer);
@@ -52,7 +56,7 @@ int net_sb_read_raw_packet(int fd, net_sb_raw_packet_t *raw_packet) {
 		return -1;
 	}
 
-	usize index = 0;
+	size_t index = 0;
 	raw_packet->id = net_sb_varint_parse(buffer, expected_len, &index);
 	raw_packet->len = expected_len;
 	raw_packet->buffer = buffer + index;

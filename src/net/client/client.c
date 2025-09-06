@@ -1,11 +1,11 @@
-#include "../common/aliases.h"
-#include "../common/raw_packet.h"
-#include "../server_bound/fields/varint.h"
-#include "../server_bound/packet_handler.h"
-#include "../server/server.h"
-#include "client.h"
-#include "sys/socket.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
+#include "../server/server.h"
+#include "../server_bound/packet_handler.h"
+#include "client.h"
 
 void net_client_loop(net_server_t *server, net_client_t *client) {
 
@@ -16,6 +16,8 @@ void net_client_loop(net_server_t *server, net_client_t *client) {
 			break;
 		}
 		net_sb_packet_handle(raw_packet, client);
+
+		// net_server_add_raw_packet(server, client->username, raw_packet);
 	}
 
 	printf("[INFO] Terminating client connection...\n");

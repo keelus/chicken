@@ -30,9 +30,9 @@ class Packet(BaseModel):
 PacketDefinitions = RootModel[dict[Category, list[Packet]]]
 
 PARSED_FIELDS: dict[FieldType, str] = {
-        FieldType.varint: "usize",
-        FieldType.string:"char *",
-        FieldType.unsigned_short:"u16"
+        FieldType.varint: "size_t",
+        FieldType.string: "char *",
+        FieldType.unsigned_short: "uint16_t",
         }
 
 def generate_packet_declaration(category: str, packet: Packet) -> str:
@@ -61,6 +61,10 @@ def generate_header_file(category: str, packets: list[Packet]) -> str:
 #define {include_guard}
 // clang-format off
 
+#include <stdint.h>
+#include <stdlib.h>
+#include <unistd.h>
+
 #include "../raw_packet.h"
 
 {s}
@@ -78,7 +82,7 @@ def generate_packet_implementation(category: str, packet: Packet) -> str:
     struct_name = f"net_sb_packets_{category}_{packet.name}"
 
     return f"""{struct_name} * {struct_name}_parse(net_sb_raw_packet_t *raw_packet) {{
-    usize index = 0;
+    size_t index = 0;
 
     {field_parses}
 
@@ -100,7 +104,11 @@ def generate_implementation_file(category: str, packets: list[Packet]) -> str:
 
     header_file_name = f"{category}.h"
 
-    s = f"""#include \"{header_file_name}\"
+    s = f"""#include <stdint.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+    #include \"{header_file_name}\"
 {field_imports}\n\n"""
     for packet in packets:
         s += generate_packet_implementation(category, packet)
@@ -125,7 +133,7 @@ def main() -> None:
 
     os.mkdir(BASE_FOLDER)
     for category, packets in definitions.root.items():
-        print(f" - Category \"{category.value}\"({len(packets)}).")
+        print(f' - Category "{category.value}"({len(packets)}).')
         with open(f"{BASE_FOLDER}/{category.value}.h", "w+") as f:
             _ = f.write(generate_header_file(category.value, packets))
         with open(f"{BASE_FOLDER}/{category.value}.c", "w+") as f:

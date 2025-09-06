@@ -1,8 +1,10 @@
 #ifndef NET_SB_FIELDS_UNSIGNED_SHORT_H
 #define NET_SB_FIELDS_UNSIGNED_SHORT_H
 
-#include "../../common/aliases.h"
+#include <stddef.h>
+#include <stdint.h>
 
-u16 net_sb_unsigned_short_parse(const char *buffer, usize len, usize *index);
+uint16_t net_sb_unsigned_short_parse(const char *buffer, size_t len,
+									 size_t *index);
 
 #endif

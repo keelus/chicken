@@ -22,7 +22,7 @@
 		final_packet->len = 0;                                                 \
 		net_cb_packet_builder_add_varint(final_packet, packet->len);           \
 		net_cb_packet_builder_add_raw_bytes(                                   \
-			final_packet, (const u8 *)packet->buffer, packet->len);            \
+			final_packet, (const uint8_t *)packet->buffer, packet->len);            \
 		net_client_send_packet(client, final_packet);                          \
 	} while(0);
 
@@ -34,11 +34,11 @@ void send_login_success(net_client_t *client) {
 }
 
 void send_join_game(net_client_t *client) {
-	i32 entity_id = 0;
-	i8 gamemode = 1;
-	i8 dimension = 0;
-	u8 difficulty = 0;
-	u8 max_players = 8;
+	int32_t entity_id = 0;
+	int8_t gamemode = 1;
+	int8_t dimension = 0;
+	uint8_t difficulty = 0;
+	uint8_t max_players = 8;
 	char *level_type = "default";
 
 	SEND_PACKET(net_cb_packets_play_join_game_create(
@@ -51,7 +51,7 @@ void send_player_look_and_position(net_client_t *client) {
 	const double z = 0.5;
 	const float yaw = 0.0;
 	const float pitch = 0.0;
-	const u8 on_ground = 0;
+	const uint8_t on_ground = 0;
 
 	SEND_PACKET(net_cb_packets_play_player_position_and_look_create(
 		x, y_eye_pos, z, yaw, pitch, on_ground));
@@ -73,8 +73,8 @@ void send_chunk_data(net_client_t *client, int chunk_x, int chunk_z) {
 	net_cb_packet_builder_add_unsigned_short(packet, primary_bit_map);
 	net_cb_packet_builder_add_unsigned_short(packet, add_bit_map);
 
-	usize raw_data_len = 4096 + 2048 + 2048 + 2048 + 256;
-	u8 *raw_data = (u8 *)malloc(sizeof(u8) * raw_data_len);
+	size_t raw_data_len = 4096 + 2048 + 2048 + 2048 + 256;
+	uint8_t *raw_data = (uint8_t *)malloc(sizeof(uint8_t) * raw_data_len);
 
 	memset(raw_data, 3, 4096);
 	memset(raw_data + 4096, 0, 2048);
@@ -90,7 +90,7 @@ void send_chunk_data(net_client_t *client, int chunk_x, int chunk_z) {
 
 	printf("Compressed length: %zu\n", compressed_len);
 	net_cb_packet_builder_add_int(packet, compressed_len);
-	net_cb_packet_builder_add_raw_bytes(packet, (u8 *)compressed,
+	net_cb_packet_builder_add_raw_bytes(packet, (uint8_t *)compressed,
 										compressed_len);
 
 	SEND_PACKET(packet);

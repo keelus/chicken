@@ -1,19 +1,20 @@
 #include <signal.h>
-#include <zlib.h>
-#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <pthread.h>
+#include <zlib.h>
+
+#include "bits/pthreadtypes.h"
 #include "net/client/client.h"
 #include "net/server_bound/packet_handler.h"
 #include "net/server_bound/raw_packet.h"
+#include "netinet/in.h"
+#include "pthread.h"
+#include "sys/socket.h"
 
 typedef struct {
 	char *buff;
-	usize len;
+	size_t len;
 } packet_t;
 
 int connect_client(net_client_t *client) {

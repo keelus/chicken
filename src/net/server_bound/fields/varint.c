@@ -1,9 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
+
 #include "varint.h"
 
-usize net_sb_varint_parse(const char *buffer, const usize len, usize *index) {
-	usize value = 0;
-	usize position = 0;
+size_t net_sb_varint_parse(const char *buffer, const size_t len,
+						   size_t *index) {
+	size_t value = 0;
+	size_t position = 0;
 	char b;
 
 	while(*index < len) {

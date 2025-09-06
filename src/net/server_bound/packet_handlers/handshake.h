@@ -2,6 +2,7 @@
 #define CHICKEN_NET_SB_PACKET_HANDLERS_HANDSHAKE
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../packet_definitions/handshake.h"
 #include "../../client/client.h"

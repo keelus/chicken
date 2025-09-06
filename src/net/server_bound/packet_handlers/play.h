@@ -2,6 +2,7 @@
 #define CHICKEN_NET_SB_PACKET_HANDLERS_PLAY
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../packet_definitions/play.h"
 #include "../../client/client.h"
@@ -16,7 +17,7 @@
 		final_packet->len = 0;                                                 \
 		net_cb_packet_builder_add_varint(final_packet, packet->len);           \
 		net_cb_packet_builder_add_raw_bytes(                                   \
-			final_packet, (const u8 *)packet->buffer, packet->len);            \
+			final_packet, (const uint8_t *)packet->buffer, packet->len);       \
 		net_client_send_packet(client, final_packet);                          \
 	} while(0);
 
