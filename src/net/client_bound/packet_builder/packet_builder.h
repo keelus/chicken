@@ -1,10 +1,9 @@
 #ifndef CHICKEN_NET_CB_PACKET_BUILDER
 #define CHICKEN_NET_CB_PACKET_BUILDER
 
-#include "../../common/aliases.h"
-#include <stdio.h>
-#include <string.h>
 #include <stdbool.h>
+
+#include "../../common/aliases.h"
 
 typedef struct {
 	char *buffer;

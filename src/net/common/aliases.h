@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <unistd.h>
 
 typedef size_t usize;
 typedef ssize_t isize;
